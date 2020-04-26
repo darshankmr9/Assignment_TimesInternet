@@ -1,0 +1,11 @@
+--> Goto the path where elkstack.yaml file is available.
+--> vars/all.yaml is not having kibana_version(commented) value. That need to
+    be passed during the playbook exection.
+--> Run the below command: (Kibana version which need to be installed)
+
+    ansible-playbook -i inventory --extra-vars "kibana_version=6.5.4" elkstack.yaml
+   
+--> Make sure the user is priviledged to perform the task.
+
+--> Change the ip/user name inventory and other files    
+

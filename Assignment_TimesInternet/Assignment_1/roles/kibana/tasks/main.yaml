@@ -1,0 +1,49 @@
+---
+#
+# Install/run kibana
+#
+# Note a lot of logstash/ES activity happens here too
+# Because of service ordering.
+
+- name: Copy kibana yum repo file
+  copy:
+    src=kibana.repo
+    dest=/etc/yum.repos.d/kibana.repo
+    owner=root
+    group=root
+    mode=0644
+  become: true
+
+- name: Install kibana rpms
+  yum:
+    name:  kibana-{{kibana_version}}
+    state: present
+  become: true
+
+# Update kibana config file to only accept local connections
+- name: Updating the config file to restrict outside access
+  lineinfile:
+   destfile: /etc/kibana/kibana.yml
+   regexp: 'server.host:'
+   line: 'server.host: localhost'
+
+- name: Check kibana users
+  stat: path=/etc/htpasswd.users
+  ignore_errors: true
+  register: kibana_user_pwfile_exists
+  become: true
+
+- name: Create kibana admin user
+  command: htpasswd -b -c /etc/htpasswd.users {{kibana_user}} {{kibana_password}}
+  ignore_errors: true
+  when: kibana_user_pwfile_exists != 0
+  become: true
+
+- name: Setup kibana service
+  service: name=kibana state=started enabled=true
+  become: true
+
+- name: Restart rsyslogd to populate elasticsearch index
+  command: systemctl restart rsyslog.service
+  ignore_errors: true
+  become: true

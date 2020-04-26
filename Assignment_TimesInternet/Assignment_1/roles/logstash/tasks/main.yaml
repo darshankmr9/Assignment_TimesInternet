@@ -1,0 +1,34 @@
+---
+# Start Logstash service
+
+- name: Copy logstash yum repo file
+  copy:
+    src=logstash.repo
+    dest=/etc/yum.repos.d/logstash.repo
+    owner=root
+    group=root
+    mode=0644
+  become: true
+
+- name: Install logstash rpms
+  yum:
+    name: logstash
+    state: present
+  become: true
+
+# Creating certs directories for SSL
+- name: Creates SSL directories
+  file:
+   path: /etc/pki/tls/certs
+   state: directory
+# Creating private directories for SSL
+- name: Creates SSL directories
+  file:
+   path: /etc/pki/tls/private
+   state: directory
+
+# Start Logstash service
+- name: Start Logstash service
+  command: systemctl restart logstash.service
+  ignore_errors: true
+  become: true

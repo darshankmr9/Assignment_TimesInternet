@@ -1,0 +1,8 @@
+--> Goto Docker_Image_Setup folder
+--> run the docker build command
+    docker build --tag my-python-app .
+--> Go to main path and locate deployment.yaml file
+--> run the below command on master server of k8s cluster
+    kubectl apply -f deployment.yaml
+--> curl the localhost:5000 , Application response will be displayed.
+
