@@ -1,3 +1,3 @@
 # Assignment_TimesInternet
 
-Instructions text file is provided in every assignment
+Instructions text file is provided in each assignment
